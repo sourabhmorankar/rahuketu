@@ -42,32 +42,54 @@ export function useGrid() {
 		get center() { return centerPosition; },
 		get viewport() { return viewport; },
 		
+		/**
+		 * @param {{x:number, y:number}} pos
+		 */
 		setPosition: (pos) => {
 			gridPosition = pos;
 		},
 		
+		/**
+		 * @param {number} zoom
+		 */
 		setZoom: (zoom) => {
 			zoomLevel = Math.max(0.5, Math.min(3, zoom));
 		},
 		
+		/**
+		 * @param {null} cardId
+		 */
 		selectCard: (cardId) => {
-			selectedCard = cardId;
+			selectedCard = null;
 		},
 		
+		/**
+		 * @param {boolean} animating
+		 */
 		setAnimating: (animating) => {
 			isAnimating = animating;
 		},
 
+		/**
+		 * @param {{width:number, height:number}} size
+		 */
 		setViewport: (size) => {
 			viewport.width = size.width;
 			viewport.height = size.height;
 		},
 
+		/**
+		 * @param {number} dx
+		 * @param {number} dy
+		 */
 		move: (dx, dy) => {
 			gridPosition.x += dx;
 			gridPosition.y += dy;
 		},
 
+		/**
+		 * @param {number} amount
+		 */
 		zoomBy: (amount) => {
 			zoomLevel = Math.max(0.5, Math.min(3, zoomLevel + amount));
 		}

@@ -2,16 +2,18 @@
 	import { useGrid } from '../../state/grid.svelte';
 	import { useUI } from '../../state/ui.svelte';
 	import InnerCard from './InnerCard.svelte';
+	import OuterCard from './OuterCard.svelte';
 	import type { Card } from '../../types/card';
 
-	let { cards } = $props<{ cards: Card[] }>();
+	let { innerCards, outerCards } = $props<{ innerCards: Card[], outerCards: Card[] }>();
 
 	const grid = useGrid();
 	const ui = useUI();
 
-	let innerCards = $derived(cards.map((card: Card) => ({ ...card, width: card.width ?? 1, height: card.height ?? 1 })));
+	let processedInnerCards = $derived(innerCards.map((card: Card) => ({ ...card, width: card.width ?? 1, height: card.height ?? 1 })));
+	let processedOuterCards = $derived(outerCards.map((card: Card) => ({ ...card, width: card.width ?? 1, height: card.height ?? 1 })));
 
-	let gridContainer: HTMLButtonElement;
+	let gridContainer: HTMLElement;
 
 	let isDragging = false;
 	let lastPosition = { x: 0, y: 0 };
@@ -69,20 +71,28 @@
 
 <svelte:window on:mouseup={handleMouseUp} on:mousemove={handleMouseMove} />
 
-<button
+<section
 	bind:this={gridContainer}
 	class="bento-grid"
+	role="application"
 	onmousedown={handleMouseDown}
 	onwheel={handleWheel}
 	onkeydown={handleKeyDown}
 	aria-label="Interactive bento grid"
-	tabindex="0"
 	style="transform: translate({-grid.position.x}px, {-grid.position.y}px) scale({grid.zoom})"
 >
-	{#each innerCards as card (card.id)}
-		<InnerCard {card} />
-	{/each}
-</button>
+	<div class="inner-circle">
+		{#each processedInnerCards as card (card.id)}
+			<InnerCard {card} />
+		{/each}
+	</div>
+	
+	<div class="outer-circle">
+		{#each processedOuterCards as card (card.id)}
+			<OuterCard {card} content={card.content} />
+		{/each}
+	</div>
+</section>
 
 <style>
 	.bento-grid {
@@ -93,5 +103,22 @@
 		cursor: grab;
 		transform-origin: 0 0;
 		will-change: transform;
+	}
+	
+	.inner-circle {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 10;
+	}
+	
+	.outer-circle {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 5;
 	}
 </style>

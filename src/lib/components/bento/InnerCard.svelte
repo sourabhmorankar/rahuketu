@@ -75,7 +75,9 @@
 	role="button"
 	tabindex="0"
 >
-	<CardComponent {card} />
+	<div class="card-content">
+		<CardComponent {card} />
+	</div>
 </div>
 
 <style>
@@ -86,16 +88,25 @@
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 		transition: all 0.3s ease;
 		cursor: pointer;
+		overflow: hidden;
 	}
 	
 	.inner-card:hover {
-		transform: translateY(-4px);
+		transform: translateY(-4px) !important;
 		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 	}
 	
 	.inner-card.selected {
 		z-index: 10;
 		box-shadow: 0 0 0 3px #3b82f6;
+	}
+
+	.card-content {
+		width: 100%;
+		height: 100%;
+		padding: 12px;
+		display: flex;
+		flex-direction: column;
 	}
 	
 	.size-1x1 { width: 180px; height: 180px; }

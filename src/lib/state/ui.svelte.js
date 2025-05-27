@@ -1,4 +1,5 @@
 let searchQuery = $state('');
+/** @type {any[]} */
 let searchResults = $state([]);
 let isSearching = $state(false);
 let searchDrawerOpen = $state(false);
@@ -22,18 +23,27 @@ export function useUI() {
 		get dashboardOpen() { return dashboardOpen; },
 		get legalDrawerOpen() { return legalDrawerOpen; },
 		
+		/**
+		 * @param {string} query
+		 */
 		setSearchQuery: (query) => {
 			searchQuery = query;
 		},
 		
+		/**
+		 * @param {any[]} results
+		 */
 		setSearchResults: (results) => {
 			searchResults = results;
 		},
 		
+		/**
+		 * @param {boolean} searching
+		 */
 		setSearching: (searching) => {
 			isSearching = searching;
 		},
-		
+
 		toggleSearchDrawer: () => {
 			searchDrawerOpen = !searchDrawerOpen;
 		},
