@@ -1,8 +1,5 @@
 <script>
-	import { page } from '$app/state';
 	import '../app.css';
-	
-	const currentPage = $derived(page);
 	
 	let { children } = $props();
 </script>
