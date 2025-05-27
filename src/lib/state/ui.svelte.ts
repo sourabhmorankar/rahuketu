@@ -1,13 +1,13 @@
-let searchQuery = $state('');
-let searchResults = $state([]);
-let isSearching = $state(false);
-let searchDrawerOpen = $state(false);
-let authDrawerOpen = $state(false);
-let dashboardOpen = $state(false);
-let legalDrawerOpen = $state(false);
+let searchQuery: string = $state('');
+let searchResults: any[] = $state([]);
+let isSearching: boolean = $state(false);
+let searchDrawerOpen: boolean = $state(false);
+let authDrawerOpen: boolean = $state(false);
+let dashboardOpen: boolean = $state(false);
+let legalDrawerOpen: boolean = $state(false);
 
-const hasSearchQuery = $derived(searchQuery.trim().length > 0);
-const searchResultsCount = $derived(searchResults.length);
+const hasSearchQuery: boolean = $derived(searchQuery.trim().length > 0);
+const searchResultsCount: number = $derived(searchResults.length);
 
 export function useUI() {
 	return {
@@ -22,15 +22,15 @@ export function useUI() {
 		get dashboardOpen() { return dashboardOpen; },
 		get legalDrawerOpen() { return legalDrawerOpen; },
 		
-		setSearchQuery: (query) => {
+		setSearchQuery: (query: string) => {
 			searchQuery = query;
 		},
 		
-		setSearchResults: (results) => {
+		setSearchResults: (results: any[]) => {
 			searchResults = results;
 		},
 		
-		setSearching: (searching) => {
+		setSearching: (searching: boolean) => {
 			isSearching = searching;
 		},
 		

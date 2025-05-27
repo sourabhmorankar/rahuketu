@@ -1,31 +1,38 @@
-<script>
-	import { useGrid } from '../../state/grid.svelte.js';
-	
+<script lang="ts">
+	import { useGrid } from '../../state/grid.svelte';
+
+	interface ViewportIndicator {
+		x: number;
+		y: number;
+		width: number;
+		height: number;
+	}
+
 	const grid = useGrid();
-	
+
 	const mapScale = 0.1;
 	const mapSize = 120;
-	
-	const viewportIndicator = $derived({
+
+	const viewportIndicator: ViewportIndicator = $derived({
 		x: (grid.center.x * mapScale) - (grid.position.x * mapScale),
 		y: (grid.center.y * mapScale) - (grid.position.y * mapScale),
 		width: (grid.viewport.width * mapScale) / grid.zoom,
 		height: (grid.viewport.height * mapScale) / grid.zoom
 	});
-	
-	function handleMapClick(event) {
-		const rect = event.currentTarget.getBoundingClientRect();
-		const clickX = event.clientX - rect.left;
-		const clickY = event.clientY - rect.top;
-		
+
+	function handleMapClick(event: MouseEvent | KeyboardEvent) {
+		const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+		const clickX = event instanceof MouseEvent ? event.clientX - rect.left : 0; // Simplified for keyboard event
+		const clickY = event instanceof MouseEvent ? event.clientY - rect.top : 0; // Simplified for keyboard event
+
 		const targetX = (clickX - mapSize / 2) / mapScale;
 		const targetY = (clickY - mapSize / 2) / mapScale;
-		
+
 		grid.setPosition({ x: targetX, y: targetY });
 	}
 </script>
 
-<div class="mini-map" onclick={handleMapClick} onkeydown={(e) => e.key === 'Enter' && handleMapClick(e)} role="button" tabindex="0">
+<div class="mini-map" onclick={handleMapClick} onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && handleMapClick(e)} role="button" tabindex="0">
 	<div class="map-grid">
 		<div class="grid-lines">
 			{#each Array(10) as _, i}
@@ -33,7 +40,7 @@
 				<div class="grid-line-h" style="top: {(i + 1) * 12}px"></div>
 			{/each}
 		</div>
-		
+
 		<div 
 			class="viewport-indicator"
 			style="
@@ -43,7 +50,7 @@
 			"
 		></div>
 	</div>
-	
+
 	<div class="zoom-info">
 		{Math.round(grid.zoom * 100)}%
 	</div>

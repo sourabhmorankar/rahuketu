@@ -1,98 +1,97 @@
-<script>
-	import { useGrid } from '../../state/grid.svelte.js';
+<script lang="ts">
+	import { useGrid } from '../../state/grid.svelte';
+	import { useUI } from '../../state/ui.svelte';
 	import InnerCard from './InnerCard.svelte';
-	
+	import type { Card } from '../../types/card';
+
+	let { cards } = $props<{ cards: Card[] }>();
+
 	const grid = useGrid();
-	
-	let gridContainer = $state();
-	let isDragging = $state(false);
-	let dragStart = $state({ x: 0, y: 0 });
-	
-	const innerCards = [
-		{ id: 'bio', type: 'bioCard', position: { x: 0, y: 0 }, size: '1x2' },
-		{ id: 'skills', type: 'skillTree', position: { x: 1, y: 0 }, size: '2x2' },
-		{ id: 'experience', type: 'experienceMap', position: { x: 3, y: 0 }, size: '3x1' },
-		{ id: 'highlights', type: 'highlights', position: { x: -1, y: 0 }, size: '2x1' }
-	];
-	
+	const ui = useUI();
+
+	let innerCards = $derived(cards.map((card: Card) => ({ ...card, width: card.width ?? 1, height: card.height ?? 1 })));
+
+	let gridContainer: HTMLButtonElement;
+
+	let isDragging = false;
+	let lastPosition = { x: 0, y: 0 };
+
 	$effect(() => {
-		if (typeof window !== 'undefined') {
-			const handleResize = () => {
-				grid.viewport.width = window.innerWidth;
-				grid.viewport.height = window.innerHeight;
-			};
-			
-			window.addEventListener('resize', handleResize);
-			handleResize();
-			
-			return () => window.removeEventListener('resize', handleResize);
-		}
+		grid.setViewport({ width: gridContainer.offsetWidth, height: gridContainer.offsetHeight });
 	});
-	
-	function handleMouseDown(event) {
+
+	function handleMouseDown(event: MouseEvent) {
 		if (event.button === 0) {
 			isDragging = true;
-			dragStart = { x: event.clientX, y: event.clientY };
+			lastPosition = { x: event.clientX, y: event.clientY };
+			gridContainer.style.cursor = 'grabbing';
 		}
 	}
-	
-	function handleMouseMove(event) {
+
+	function handleMouseMove(event: MouseEvent) {
 		if (isDragging) {
-			const deltaX = event.clientX - dragStart.x;
-			const deltaY = event.clientY - dragStart.y;
-			
-			grid.setPosition({
-				x: grid.position.x - deltaX,
-				y: grid.position.y - deltaY
-			});
-			
-			dragStart = { x: event.clientX, y: event.clientY };
+			const dx = event.clientX - lastPosition.x;
+			const dy = event.clientY - lastPosition.y;
+			grid.move(dx, dy);
+			lastPosition = { x: event.clientX, y: event.clientY };
 		}
 	}
-	
+
 	function handleMouseUp() {
 		isDragging = false;
+		gridContainer.style.cursor = 'grab';
 	}
-	
-	function handleWheel(event) {
+
+	function handleWheel(event: WheelEvent) {
 		event.preventDefault();
-		const zoomDelta = event.deltaY > 0 ? -0.1 : 0.1;
-		grid.setZoom(grid.zoom + zoomDelta);
+		const scaleAmount = -event.deltaY * 0.001;
+		grid.zoomBy(scaleAmount);
+	}
+
+	function handleKeyDown(event: KeyboardEvent) {
+		const moveAmount = 50;
+		switch (event.key) {
+			case 'ArrowUp':
+				grid.move(0, moveAmount);
+				break;
+			case 'ArrowDown':
+				grid.move(0, -moveAmount);
+				break;
+			case 'ArrowLeft':
+				grid.move(moveAmount, 0);
+				break;
+			case 'ArrowRight':
+				grid.move(-moveAmount, 0);
+				break;
+		}
 	}
 </script>
 
-<svelte:window
-	onmousemove={handleMouseMove}
-	onmouseup={handleMouseUp}
-/>
+<svelte:window on:mouseup={handleMouseUp} on:mousemove={handleMouseMove} />
 
-<div
+<button
 	bind:this={gridContainer}
 	class="bento-grid"
 	onmousedown={handleMouseDown}
 	onwheel={handleWheel}
-	role="application"
+	onkeydown={handleKeyDown}
 	aria-label="Interactive bento grid"
+	tabindex="0"
 	style="transform: translate({-grid.position.x}px, {-grid.position.y}px) scale({grid.zoom})"
 >
 	{#each innerCards as card (card.id)}
 		<InnerCard {card} />
 	{/each}
-</div>
+</button>
 
 <style>
 	.bento-grid {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100vh;
+		position: relative;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
 		cursor: grab;
-		user-select: none;
+		transform-origin: 0 0;
 		will-change: transform;
-	}
-	
-	.bento-grid:active {
-		cursor: grabbing;
 	}
 </style>

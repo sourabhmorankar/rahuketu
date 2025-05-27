@@ -1,17 +1,18 @@
+/// <reference types="vitest/globals" />
 import { sveltekit } from '@sveltejs/kit/vite';
 import { enhancedImages } from '@sveltejs/enhanced-img';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
 	plugins: [
-		enhancedImages(),
-		sveltekit()
+		enhancedImages() as any,
+		sveltekit() as any
 	],
 	test: {
 		globals: true,
 		environment: 'jsdom',
 		include: ['src/**/*.{test,spec}.{js,ts,svelte}'],
-		setupFiles: ['./tests/setup.js']
+		setupFiles: ['./tests/setup.js'],
 	},
 	build: {
 		rollupOptions: {

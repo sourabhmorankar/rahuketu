@@ -1,7 +1,9 @@
-let currentUser = $state(null);
+import type { User } from '$lib/types/auth';
+
+let currentUser: User | null = $state(null);
 let isAuthenticated = $state(false);
 let isLoading = $state(false);
-let authError = $state(null);
+let authError: string | null = $state(null);
 
 const authState = $derived(() => ({
 	user: currentUser,
@@ -22,15 +24,15 @@ export function useAuth() {
 		get isLoading() { return isLoading; },
 		get error() { return authError; },
 		
-		setUser: (user) => {
+		setUser: (user: User | null) => {
 			currentUser = user;
 		},
 		
-		setLoading: (loading) => {
+		setLoading: (loading: boolean) => {
 			isLoading = loading;
 		},
 		
-		setError: (error) => {
+		setError: (error: string | null) => {
 			authError = error;
 		},
 		

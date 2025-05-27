@@ -1,6 +1,6 @@
-let gridPosition = $state({ x: 0, y: 0 });
+let gridPosition: { x: number; y: number } = $state({ x: 0, y: 0 });
 let zoomLevel = $state(1);
-let selectedCard = $state(null);
+let selectedCard: string | null = $state(null);
 let isAnimating = $state(false);
 let viewport = $state({
 	width: 0,
@@ -42,20 +42,34 @@ export function useGrid() {
 		get center() { return centerPosition; },
 		get viewport() { return viewport; },
 		
-		setPosition: (pos) => {
+		setPosition: (pos: { x: number; y: number }) => {
 			gridPosition = pos;
 		},
 		
-		setZoom: (zoom) => {
+		setZoom: (zoom: number) => {
 			zoomLevel = Math.max(0.5, Math.min(3, zoom));
 		},
 		
-		selectCard: (cardId) => {
+		selectCard: (cardId: string | null) => {
 			selectedCard = cardId;
 		},
 		
-		setAnimating: (animating) => {
+		setAnimating: (animating: boolean) => {
 			isAnimating = animating;
+		},
+
+		setViewport: (size: { width: number; height: number }) => {
+			viewport.width = size.width;
+			viewport.height = size.height;
+		},
+
+		move: (dx: number, dy: number) => {
+			gridPosition.x += dx;
+			gridPosition.y += dy;
+		},
+
+		zoomBy: (amount: number) => {
+			zoomLevel = Math.max(0.5, Math.min(3, zoomLevel + amount));
 		}
 	};
 }

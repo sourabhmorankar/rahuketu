@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { useGrid } from '../../state/grid.svelte.js';
 	import BioCard from './cards/BioCard.svelte';
 	
@@ -12,7 +12,7 @@
 		grid.selectCard(card.id);
 	}
 	
-	function getCardComponent(type) {
+	function getCardComponent(type: string) {
 		switch (type) {
 			case 'bioCard':
 				return BioCard;
