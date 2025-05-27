@@ -2,32 +2,69 @@
 ## Project Requirements & Specifications
 
 ### Overview
-Rahuketu is a modern, interactive personal blog application built with SvelteKit and Firebase. The application features an infinite, scrollable and zoomable bento grid layout that serves as the main navigation and content discovery interface. The design is inspired by modern portfolio websites with a unique twist on content presentation through various bento card layouts.
+Rahuketu is a modern, interactive personal blog application built with SvelteKit 2.x and Firebase. The application features an infinite, scrollable and zoomable bento grid layout that serves as the main navigation and content discovery interface. The design is inspired by modern portfolio websites with a unique twist on content presentation through various bento card layouts.
 
 ---
 
 ## Technical Stack
 
 ### Frontend
-- **Framework**: SvelteKit 2.x with TypeScript
-- **Styling**: CSS with custom animations (no gradients policy)
-- **Animations**: Anime.js for smooth transitions and morphing effects
-- **Linting**: ESLint with Prettier
-- **Markdown**: MDSvex for blog content processing
+- **Framework**: SvelteKit 2.20+ with Svelte 5 and Runes API
+- **Styling**: CSS with custom animations and enhanced image handling
+- **Animations**: Anime.js v4.0.2 for smooth transitions and morphing effects
+- **State Management**: Svelte 5 Runes ($state, $derived, $effect) and $app/state
+- **Markdown**: MDSvex for blog content processing with enhanced preprocessing
+- **Type Safety**: TypeScript with strict mode and enhanced validation
+- **Code Quality**: ESLint 9.x with TypeScript ESLint and Prettier 3.x
 
 ### Backend & Services
-- **Hosting**: Firebase Hosting
-- **Database**: Firestore (NoSQL)
-- **Storage**: Firebase Cloud Storage
-- **Authentication**: Firebase Auth (admin-only)
-- **Functions**: Firebase Cloud Functions
-- **Security**: Firebase App Check
+- **Hosting**: Firebase Hosting with edge optimization
+- **Database**: Firestore with enhanced indexing and real-time subscriptions
+- **Storage**: Firebase Cloud Storage with automatic image optimization
+- **Authentication**: Firebase Auth with enhanced security features
+- **Functions**: Firebase Cloud Functions with v2 runtime
+- **Security**: Firebase App Check with reCAPTCHA Enterprise
+- **Performance**: Enhanced fetch with automatic deduplication
 
 ### Development Tools
-- **Package Manager**: npm
-- **Build Tool**: Vite
-- **Type Checking**: TypeScript with svelte-check
-- **Adapter**: @sveltejs/adapter-node
+- **Package Manager**: npm with .npmrc optimization
+- **Build Tool**: Vite 6.x with enhanced bundling strategies
+- **Adapter**: @sveltejs/adapter-node with custom server capabilities
+- **Image Handling**: @sveltejs/enhanced-img for automatic optimization
+- **CLI Tools**: SvelteKit unified CLI (sv) for project management
+- **Type Checking**: TypeScript 5.x with svelte-check 4.x
+
+---
+
+## SvelteKit 2.x Enhanced Features
+
+### Svelte 5 Runes Integration
+- **Reactive State**: Using $state() for component state management
+- **Derived Values**: $derived() for computed values and reactive calculations  
+- **Side Effects**: $effect() for handling side effects and cleanup
+- **Props Handling**: $props() for component property management
+- **Cross-file Reactivity**: Shared reactive state in .svelte.js files
+
+### Enhanced Routing System
+- **Shallow Routing**: pushState/replaceState for modal and tab navigation
+- **Parameter Matchers**: Custom parameter validation for route segments
+- **Route Groups**: Organized routing with parentheses grouping
+- **Advanced Load Functions**: Enhanced with improved fetch and streaming
+- **Reroute Hook**: URL transformation for internationalization support
+
+### Performance Optimizations
+- **Bundle Strategies**: Configurable bundling (split/single/inline)
+- **Enhanced Fetch**: Automatic deduplication and cookie preservation
+- **Image Optimization**: Built-in responsive image generation
+- **Server-Side Utilities**: getRequestEvent() for server context access
+- **Transport Hook**: Custom class serialization across server/client
+
+### Modern Development Experience
+- **Form Actions**: Progressive enhancement with automatic CSRF protection
+- **Error Boundaries**: Enhanced error handling with better user experience
+- **Hot Module Replacement**: Faster development with Vite 6.x
+- **WebSocket Support**: Native WebSocket integration for real-time features
+- **Asynchronous Components**: Future-ready async/await component patterns
 
 ---
 
@@ -36,559 +73,423 @@ Rahuketu is a modern, interactive personal blog application built with SvelteKit
 ### Core Layout Structure
 
 #### Main Grid System
-- **Grid Type**: Infinite bento grid with dynamic cell sizing
-- **Grid Dimensions**: Expandable in all four directions
+- **Grid Type**: Infinite bento grid with dynamic cell sizing using CSS Grid
+- **Grid Dimensions**: Expandable in all four directions with virtual scrolling
 - **Cell Size**: Variable (1x1, 1x2, 2x1, 2x2, 3x1, L-shaped combinations)
 - **Center Point**: Bio card positioned at exact center of viewport on load
-- **Navigation**: Drag/pan functionality with touch support
-- **Zoom**: Smooth zoom in/out capabilities
+- **Navigation**: Drag/pan with momentum and touch gesture support
+- **Zoom**: Smooth zoom with hardware acceleration and gesture recognition
+- **Performance**: Intersection Observer for lazy loading and memory management
 
-#### Card Categories
+#### Svelte 5 State Management
+```javascript
+// Global grid state using Svelte 5 runes
+// src/lib/state/grid.svelte.js
+let gridPosition = $state({ x: 0, y: 0 });
+let zoomLevel = $state(1);
+let selectedCard = $state(null);
+
+const gridBounds = $derived({
+  minX: gridPosition.x - 1000,
+  maxX: gridPosition.x + 1000,
+  minY: gridPosition.y - 1000,
+  maxY: gridPosition.y + 1000
+});
+
+$effect(() => {
+  // Handle grid position changes and update visible cards
+  updateVisibleCards(gridPosition, zoomLevel);
+});
+```
+
+#### Enhanced Card Categories
 
 ##### Inner Cards (Central Area - Unique)
-Located in the center of the grid, each appearing only once:
+Using Svelte 5 components with runes for optimal performance:
 
-1. **bioCard** (1x2)
-   - Position: Exact center of grid
-   - Content: Avatar, name, title, brief bio
-   - Style: Professional card design with photo
-2. **skillTree** (2x2 or L-shaped)
-   - Interactive skill visualization
-   - Categorized technical competencies
-   - Visual progress indicators
+1. **bioCard** (1x2) - Professional bio with $state management
+2. **skillTree** (2x2) - Interactive skills with $derived progress
+3. **experienceMap** (3x1) - Timeline with smooth animations
+4. **highlights** (2x1) - Achievements with real-time updates
+5. **photoBooth** (1x2) - Image carousel with lazy loading
+6. **rahulAsks** (1x1) - Interactive questions with state persistence
+7. **askRahul** (1x1) - FAQ with search functionality
+8. **moodIndicator** (1x1) - Real-time mood updates
+9. **newsMarquee** (3x1) - Live news ticker with WebSocket updates
+10. **socialTray** (2x1) - Social media integration with live feeds
+11. **contactRahul** (1x2) - Contact form with form actions
+12. **resumeDownload** (1x1) - Document download with analytics
+13. **featuredAreaOne** (2x2) - Primary showcase with enhanced images
+14. **featuredAreaTwo** (2x1) - Secondary content with animations
+15. **featuredAreaThree** (1x2) - Tertiary content with interactions
 
-3. **experienceMap** (3x1 or 2x2)
-   - Timeline-based experience display
-   - Company logos and roles
-   - Interactive hover effects
-
-4. **highlights** (2x1)
-   - Key achievements and milestones
-   - Awards and recognitions
-   - Quantified accomplishments
-
-5. **photoBooth** (1x2)
-   - Personal photo carousel
-   - Behind-the-scenes content
-   - Casual and professional shots
-
-6. **rahulAsks** (1x1)
-   - Questions for the audience
-   - Engagement prompts
-   - Community interaction
-
-7. **askRahul** (1x1)
-   - FAQ section
-   - Common questions
-   - Direct interaction
-
-8. **moodIndicator** (1x1)
-   - Current mood/status
-   - Real-time updates
-   - Personal touch element
-
-9. **newsMarquee** (3x1)
-   - Latest updates ticker
-   - Important announcements
-   - Breaking news format
-
-10. **socialTray** (2x1)
-    - Social media links
-    - Live social feed
-    - Platform integrations
-
-11. **contactRahul** (1x2)
-    - Contact form
-    - Professional inquiries
-    - Direct messaging
-
-12. **resumeDownload** (1x1)
-    - CV download link
-    - Portfolio access
-    - Professional documents
-
-13. **featuredAreaOne** (2x2)
-    - Primary featured content
-    - Major projects showcase
-    - Hero content area
-
-14. **featuredAreaTwo** (2x1)
-    - Secondary featured content
-    - Recent work highlights
-    - Important updates
-
-15. **featuredAreaThree** (1x2)
-    - Tertiary featured content
-    - Additional showcases
-    - Supplementary information
 ##### Outer Cards (Surrounding Area - Dynamic)
-Chronologically arranged thumbnails using slug system:
+Chronologically arranged with enhanced performance:
 
-1. **blogArticles**
-   - Technical blog posts
-   - Thought leadership content
-   - Tutorial articles
-
-2. **caseStudies**
-   - Project deep dives
-   - Problem-solving narratives
-   - Professional work samples
-
-3. **socialEmbed**
-   - Embedded social media posts
-   - Cross-platform content
-   - Community interactions
-
-4. **photoUpdate**
-   - Recent photography
-   - Visual storytelling
-   - Personal moments
-
-5. **clientTestimonial**
-   - Client feedback
-   - Professional endorsements
-   - Success stories
-
-6. **breakingNews**
-   - Latest announcements
-   - Important updates
-   - Time-sensitive content
+1. **blogArticles** - MDSvex processed content with enhanced images
+2. **caseStudies** - Project showcases with interactive elements
+3. **socialEmbed** - Real-time social media integration
+4. **photoUpdate** - Optimized image galleries with WebP support
+5. **clientTestimonial** - Dynamic testimonials with animations
+6. **breakingNews** - Real-time updates with WebSocket connections
 
 ---
 
-## User Interface Components
+## Enhanced User Interface Components
 
-### Fixed Navigation Elements
+### Fixed Navigation Elements with Svelte 5
 
-#### Top-Right Action Icons (4 Square Icons in Column)
-1. **Search Icon**
-   - Opens slide-out drawer
-   - Full-text search functionality
-   - Content filtering options
-   - Real-time search results
+#### Top-Right Action Icons (Using $state for UI management)
+```javascript
+// src/lib/state/navigation.svelte.js
+let searchOpen = $state(false);
+let authDrawerOpen = $state(false);
+let dashboardOpen = $state(false);
+let legalDrawerOpen = $state(false);
+let isAuthenticated = $state(false);
 
-2. **Login/Logout Icon**
-   - Authentication drawer
-   - Admin-only access
-   - Secure login form
-   - Session management
+const visibleIcons = $derived(() => {
+  return isAuthenticated 
+    ? ['search', 'auth', 'dashboard', 'legal']
+    : ['search', 'auth', 'legal'];
+});
+```
 
-3. **Dashboard Icon** (Admin Only)
-   - Content management interface
-   - Analytics overview
-   - Administrative tools
-   - Visible only when authenticated
-
-4. **Legal Icon**
-   - Footer links drawer
-   - Privacy policy
-   - Terms of service
-   - Legal information
+1. **Search Icon** - Enhanced drawer with real-time search using $derived
+2. **Login/Logout Icon** - Secure authentication with Firebase Auth v11
+3. **Dashboard Icon** - Admin interface with role-based access
+4. **Legal Icon** - Footer links with shallow routing
 
 #### Mini Map (Bottom-Left Corner)
-- **Position**: Fixed bottom-left
-- **Functionality**: Grid overview and navigation
-- **Features**:
-  - Current viewport indicator
-  - Click-to-navigate
-  - Zoom level display
-  - Grid boundary visualization
+- **Enhanced Rendering**: Virtual scrolling for performance
+- **Real-time Updates**: $effect for position synchronization
+- **Touch Optimized**: Gesture recognition for mobile devices
+- **Performance**: GPU-accelerated with intersection observers
+
 ---
 
-## Content Management System
+## Enhanced Content Management System
 
-### Admin Capabilities
+### Svelte 5 Admin Capabilities
 
-#### Inner Cards Management
-- **Edit Mode**: Toggle edit state for content modification
-- **Rich Text Editor**: WYSIWYG editor for text content
-- **Image Upload**: Direct image uploads to Firebase Storage
-- **Layout Adjustment**: Modify card positioning and sizing
-- **Content Versioning**: Track content changes
-- **Preview Mode**: See changes before publishing
+#### Form Actions Integration
+```javascript
+// src/routes/admin/content/+page.server.js
+export const actions = {
+  updateCard: async ({ request, locals }) => {
+    if (!locals.user?.isAdmin) {
+      throw error(403, 'Unauthorized');
+    }
+    
+    const formData = await request.formData();
+    // Process form with automatic CSRF protection
+    return { success: true };
+  }
+};
+```
 
-#### Outer Cards CRUD Operations
-- **Create**: Add new blog posts, case studies, etc.
-- **Read**: View and organize existing content
-- **Update**: Edit existing content and metadata
-- **Delete**: Remove outdated or unwanted content
-- **Bulk Operations**: Mass content management
-- **Publication Status**: Draft/Published states
-
-### Content Types & Schemas
-
-#### Blog Articles
+#### Enhanced Content Types with TypeScript 5.x
 ```typescript
+// src/lib/types/content.ts
 interface BlogArticle {
   id: string;
   slug: string;
   title: string;
   excerpt: string;
   content: string; // MDSvex processed
-  featuredImage: string;
-  author: string;
+  featuredImage: EnhancedImage;
+  author: Author;
   publishedAt: Date;
   updatedAt: Date;
-  tags: string[];
-  category: string;
+  tags: readonly string[];
+  category: ContentCategory;
   readTime: number;
-  status: 'draft' | 'published';
+  status: 'draft' | 'published' | 'archived';
   gridPosition?: GridPosition;
   cardSize: CardSize;
+  seo: SEOMetadata;
 }
-```
 
-#### Case Studies
-```typescript
-interface CaseStudy {
-  id: string;
-  slug: string;
-  title: string;
-  client: string;
-  industry: string;
-  challenge: string;
-  solution: string;
-  results: string[];
-  technologies: string[];
-  images: string[];
-  timeline: string;
-  publishedAt: Date;
-  status: 'draft' | 'published';
-  gridPosition?: GridPosition;
-  cardSize: CardSize;
-}
-```
-#### Inner Card Content
-```typescript
-interface InnerCardContent {
-  cardType: InnerCardType;
-  title: string;
-  content: any; // Flexible content structure
-  lastUpdated: Date;
-  isActive: boolean;
-  gridPosition: GridPosition;
-  cardSize: CardSize;
-  customStyles?: any;
+interface EnhancedImage {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  formats: {
+    webp?: string;
+    avif?: string;
+  };
+  srcset: string;
 }
 ```
 
 ---
 
-## Animation & Interaction Design
+## Modern Animation & Interaction Design
 
-### Card Morphing Animation
-- **Trigger**: Click on any bento card
-- **Animation Library**: Anime.js
-- **Sequence**:
-  1. Card expansion from grid position
-  2. Content fade-in with stagger effect
-  3. Smooth morphing to full-content view
-  4. Contextual content loading
-  5. Interactive elements activation
+### Enhanced Animation System
+- **Library**: Anime.js v4.0.2 with GPU acceleration
+- **Performance**: 60fps animations with hardware acceleration
+- **Accessibility**: Respects prefers-reduced-motion settings
+- **Mobile**: Touch-optimized with gesture recognition
 
-### Grid Navigation
-- **Smooth Panning**: Momentum-based scrolling
-- **Touch Gestures**: Pinch-to-zoom, drag-to-pan
-- **Keyboard Navigation**: Arrow keys for movement
-- **Anchor Points**: Quick navigation to key content
-- **Elastic Boundaries**: Gentle bounce at grid limits
+### Svelte 5 Animation Integration
+```javascript
+// src/lib/utils/animations.svelte.js
+let animationState = $state('idle');
+let currentAnimation = $state(null);
 
-### Micro-Interactions
-- **Hover Effects**: Subtle card elevation and highlighting
-- **Loading States**: Skeleton screens and progressive enhancement
-- **Feedback Animations**: Button presses, form submissions
-- **Transition States**: Smooth state changes throughout
+const animateCardMorph = $effect(() => {
+  if (animationState === 'morphing') {
+    // Trigger Anime.js animation with cleanup
+    currentAnimation = anime({
+      targets: '.card',
+      scale: [1, 1.5],
+      duration: 300,
+      easing: 'easeOutCubic'
+    });
+  }
+});
+```
 
 ---
 
-## Database Design
+## Enhanced Database Design with Firestore
 
-### Firestore Collections
-
-#### Main Collections
+### Optimized Collections Structure
 ```
-/content
+/content_v2
   /innerCards
-    /{cardType} - Document for each inner card type
-  /outerCards
-    /{id} - Individual outer card documents
+    /{cardType} - Enhanced with real-time listeners
+  /outerCards  
+    /{id} - Optimized queries with composite indexes
   /metadata
-    /siteConfig - Global site configuration
-    /analytics - Usage analytics data
-    /cache - Cached computed data
+    /siteConfig - Enhanced configuration management
+    /analytics - Real-time analytics with aggregation
+    /cache - Intelligent caching with TTL
 
-/users
-  /{userId} - Admin user information
+/users_v2
+  /{userId} - Enhanced security with App Check
 
-/sessions
-  /{sessionId} - Active user sessions
+/realtime
+  /{sessionId} - WebSocket state management
 ```
 
-#### Content Indexing
+### Enhanced Security Rules
+```javascript
+// Firestore rules with enhanced security
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /content_v2/{document=**} {
+      allow read: if request.auth != null || resource.data.public == true;
+      allow write: if request.auth != null && 
+                   get(/databases/$(database)/documents/users_v2/$(request.auth.uid)).data.role == 'admin' &&
+                   request.app_check_token != null;
+    }
+  }
+}
 ```
-/search
-  /index - Full-text search index
-  /tags - Tag-based filtering
-  /categories - Category organization
+
+---
+
+## Enhanced Performance Optimization
+
+### SvelteKit 2.x Performance Features
+- **Enhanced Fetch**: Automatic deduplication and streaming
+- **Bundle Strategies**: Optimized code splitting with configurable strategies
+- **Image Optimization**: @sveltejs/enhanced-img with automatic format selection
+- **Server Utilities**: getRequestEvent() for efficient server-side operations
+- **Virtual Scrolling**: Only render visible grid cells
+- **Intersection Observer**: Lazy load cards as they enter viewport
+
+### Progressive Enhancement Pattern
+```javascript
+// src/routes/+layout.server.js
+export async function load({ fetch, url }) {
+  // Enhanced fetch with automatic deduplication
+  const [config, initialContent] = await Promise.all([
+    fetch('/api/config').then(r => r.json()),
+    fetch(`/api/content?viewport=${url.searchParams.get('viewport')}`).then(r => r.json())
+  ]);
+  
+  return {
+    config,
+    initialContent,
+    // Stream additional content
+    lazyContent: fetch('/api/content/lazy').then(r => r.json())
+  };
+}
 ```
-### Security Rules
-- **Admin-only Writes**: Only authenticated admin can modify content
-- **Public Reads**: All content publicly readable
-- **Personal Data Protection**: Sensitive data properly secured
-- **Rate Limiting**: Prevent abuse through function-based limits
 
 ---
 
-## Performance Optimization
+## Enhanced SEO & Accessibility
 
-### Frontend Optimization
-- **Code Splitting**: Route-based and component-based splitting
-- **Image Optimization**: WebP format with fallbacks
-- **Progressive Loading**: Lazy loading for off-screen content
-- **Cache Strategy**: Service worker for offline functionality
-- **Bundle Optimization**: Tree shaking and minification
+### SvelteKit 2.x SEO Features
+- **Dynamic Meta Tags**: Server-side generated with enhanced routing
+- **Structured Data**: JSON-LD with real-time updates
+- **Sitemap Generation**: Automatic XML sitemap with dynamic routes
+- **Enhanced Images**: Automatic alt text and responsive images
+- **Performance**: Core Web Vitals optimization
 
-### Backend Optimization
-- **Firestore Indexing**: Optimized queries for content retrieval
-- **Cloud Function Caching**: Redis for frequently accessed data
-- **CDN Integration**: Firebase CDN for static assets
-- **Database Denormalization**: Optimized read patterns
-- **Batch Operations**: Efficient bulk data operations
+### Enhanced Accessibility
+```javascript
+// src/lib/components/AccessibleCard.svelte
+<script>
+  let { title, content, ...props } = $props();
+  let focused = $state(false);
+  let pressed = $state(false);
+  
+  const ariaProps = $derived(() => ({
+    'aria-label': title,
+    'aria-pressed': pressed,
+    'tabindex': 0,
+    'role': 'button'
+  }));
+</script>
 
-### Grid Performance
-- **Virtual Scrolling**: Only render visible cards
-- **Intersection Observer**: Load content as it comes into view
-- **Memory Management**: Dispose of off-screen elements
-- **Smooth 60fps**: Hardware-accelerated animations
-- **Touch Optimization**: Reduced touch latency
-
----
-
-## SEO & Accessibility
-
-### Search Engine Optimization
-- **Meta Tags**: Dynamic meta tags per content
-- **Structured Data**: Schema.org markup
-- **Sitemap Generation**: Automated XML sitemap
-- **Social Media Cards**: Open Graph and Twitter cards
-- **URL Structure**: SEO-friendly slug-based URLs
-
-### Accessibility Features
-- **Keyboard Navigation**: Full keyboard accessibility
-- **Screen Reader Support**: ARIA labels and descriptions
-- **Color Contrast**: WCAG 2.1 AA compliance
-- **Focus Management**: Logical tab order
-- **Alternative Text**: Comprehensive image alt text
-- **Motion Preferences**: Respect reduced motion settings
+<div {...ariaProps} on:focus={() => focused = true}>
+  {content}
+</div>
+```
 
 ---
 
-## Security Implementation
+## Enhanced Security Implementation
 
-### Firebase App Check
-- **reCAPTCHA Enterprise**: Bot protection
-- **Device Attestation**: Mobile app verification
-- **Custom Providers**: Additional security layers
+### Firebase Security with SvelteKit 2.x
+- **App Check**: reCAPTCHA Enterprise with device attestation
+- **Enhanced Auth**: Multi-factor authentication with session management
+- **CSRF Protection**: Built-in with form actions
+- **Content Security Policy**: Configurable CSP with SvelteKit
+- **Transport Security**: Custom serialization with security validation
 
-### Authentication Security
-- **Multi-Factor Authentication**: Optional 2FA for admin
-- **Session Management**: Secure session handling
-- **Password Policies**: Strong password requirements
-- **Brute Force Protection**: Login attempt limiting
-### Data Protection
-- **Input Sanitization**: XSS prevention
-- **CSRF Protection**: Cross-site request forgery prevention
-- **Content Security Policy**: CSP headers implementation
-- **HTTPS Enforcement**: Secure data transmission
+### Server-Side Security
+```javascript
+// src/hooks.server.js
+import { getRequestEvent } from '$app/server';
 
----
-
-## Content Strategy
-
-### Bio Card Content
-Based on Rahul Nangare's CV:
-- **Name**: Rahul Nangare
-- **Title**: Sr Cloud Network & Automation Engineer
-- **Current Role**: Nice CXone, Pune
-- **Experience**: 10+ years in network engineering
-- **Specializations**: Cloud networking, automation, Python scripting
-
-### Inner Cards Content Strategy
-
-#### Skills Tree
-- **Cloud Platforms**: AWS, Azure (certified)
-- **Network Equipment**: Juniper, Arista, Palo Alto, F5
-- **Protocols**: BGP, OSPF, MPLS
-- **Automation**: Python, Ansible
-- **Monitoring**: SolarWinds, LogicMonitor, ThousandEyes
-
-#### Experience Map
-- **Current**: Sr Cloud Network & Automation Engineer (2020-Present)
-- **Previous**: L2 Network Operations Engineer (2019-2020)
-- **Earlier**: Network and Security Engineer (2017-2019)
-- **Foundation**: Network Executive at Tata Communications (2014-2017)
-
-#### Highlights
-- **AWS Certified Advanced Networking–Specialty**
-- **MVP Award** for automating network tasks (Aug 2023)
-- **Employee of the Quarter** (Apr 2021)
-- **Multiple Certifications**: CCNA, JNCIA-Junos, JNCIA-Cloud
+export async function handle({ event, resolve }) {
+  // Enhanced security headers
+  const response = await resolve(event, {
+    filterSerializedResponseHeaders: (name) => name.startsWith('x-'),
+    preload: ({ type, path }) => type === 'font' || path.includes('critical')
+  });
+  
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  return response;
+}
+```
 
 ---
 
-## Development Roadmap
+## Enhanced Development Roadmap
 
-### Phase 1: Foundation (Weeks 1-2)
-- [ ] Project structure setup
-- [ ] Firebase integration
-- [ ] Basic grid layout implementation
-- [ ] Core navigation functionality
+### Phase 1: Foundation with SvelteKit 2.x (Weeks 1-2)
+- [ ] Svelte 5 project setup with enhanced features
+- [ ] Firebase v11 integration with App Check
+- [ ] Enhanced grid system with virtual scrolling
+- [ ] $app/state navigation implementation
 
-### Phase 2: Content System (Weeks 3-4)
-- [ ] Inner cards implementation
-- [ ] Content management system
-- [ ] Admin authentication
-- [ ] Basic CRUD operations
+### Phase 2: Content System with Runes (Weeks 3-4)
+- [ ] Svelte 5 inner cards with $state/$derived
+- [ ] Form actions for content management
+- [ ] Enhanced authentication with Firebase Auth
+- [ ] Real-time updates with WebSocket support
 
 ### Phase 3: Advanced Features (Weeks 5-6)
-- [ ] Animation system implementation
-- [ ] Search functionality
-- [ ] Mini-map component
-- [ ] Mobile optimization
+- [ ] Anime.js v4 animation system
+- [ ] Enhanced image optimization
+- [ ] Advanced search with real-time filtering
+- [ ] Mobile optimization with gesture support
 
 ### Phase 4: Content & Polish (Weeks 7-8)
-- [ ] Content population
-- [ ] Performance optimization
-- [ ] SEO implementation
-- [ ] Security hardening
+- [ ] MDSvex content processing
+- [ ] Performance optimization with enhanced fetch
+- [ ] SEO with structured data and meta tags
+- [ ] Security hardening with App Check
 
 ### Phase 5: Testing & Deployment (Weeks 9-10)
-- [ ] Comprehensive testing
-- [ ] Accessibility audit
-- [ ] Performance testing
-- [ ] Production deployment
+- [ ] Comprehensive testing with Svelte 5 features
+- [ ] Accessibility audit with enhanced standards
+- [ ] Performance testing with Core Web Vitals
+- [ ] Production deployment with monitoring
+
 ---
 
-## File Structure
+## Enhanced File Structure
 
 ```
 src/
 ├── lib/
 │   ├── components/
 │   │   ├── bento/
-│   │   │   ├── BentoGrid.svelte
-│   │   │   ├── InnerCard.svelte
-│   │   │   ├── OuterCard.svelte
+│   │   │   ├── BentoGrid.svelte (Svelte 5 with runes)
+│   │   │   ├── InnerCard.svelte (Enhanced with $state)
+│   │   │   ├── OuterCard.svelte (Virtual scrolling)
 │   │   │   └── cards/
-│   │   │       ├── BioCard.svelte
-│   │   │       ├── SkillTree.svelte
-│   │   │       ├── ExperienceMap.svelte
+│   │   │       ├── BioCard.svelte ($props integration)
+│   │   │       ├── SkillTree.svelte ($derived calculations)
 │   │   │       └── [other-cards].svelte
 │   │   ├── navigation/
-│   │   │   ├── ActionIcons.svelte
-│   │   │   ├── MiniMap.svelte
-│   │   │   └── SearchDrawer.svelte
+│   │   │   ├── ActionIcons.svelte (Enhanced UI state)
+│   │   │   ├── MiniMap.svelte (Performance optimized)
+│   │   │   └── SearchDrawer.svelte (Real-time search)
 │   │   ├── admin/
-│   │   │   ├── Dashboard.svelte
-│   │   │   ├── ContentEditor.svelte
-│   │   │   └── AuthDrawer.svelte
+│   │   │   ├── Dashboard.svelte (Form actions)
+│   │   │   ├── ContentEditor.svelte (Enhanced editor)
+│   │   │   └── AuthDrawer.svelte (Firebase Auth v11)
 │   │   └── common/
-│   │       ├── Modal.svelte
-│   │       └── Loading.svelte
-│   ├── stores/
-│   │   ├── auth.ts
-│   │   ├── content.ts
-│   │   ├── grid.ts
-│   │   └── ui.ts
+│   │       ├── Modal.svelte (Shallow routing)
+│   │       ├── Loading.svelte (Enhanced animations)
+│   │       └── EnhancedImage.svelte (Auto optimization)
+│   ├── state/ (Svelte 5 runes state management)
+│   │   ├── auth.svelte.js
+│   │   ├── content.svelte.js
+│   │   ├── grid.svelte.js
+│   │   └── ui.svelte.js
 │   ├── utils/
-│   │   ├── firebase.ts
-│   │   ├── animations.ts
-│   │   ├── grid-helpers.ts
-│   │   └── content-helpers.ts
+│   │   ├── firebase.ts (v11 with App Check)
+│   │   ├── animations.svelte.js (Anime.js integration)
+│   │   ├── grid-helpers.ts (Performance optimized)
+│   │   └── enhanced-fetch.ts (SvelteKit 2.x features)
 │   └── types/
-│       ├── content.ts
-│       ├── grid.ts
-│       └── auth.ts
+│       ├── content.ts (TypeScript 5.x)
+│       ├── grid.ts (Enhanced definitions)
+│       └── auth.ts (Firebase Auth types)
 ├── routes/
-│   ├── +layout.svelte
-│   ├── +page.svelte
+│   ├── +layout.svelte (Enhanced with $app/state)
+│   ├── +layout.server.js (Enhanced load functions)
+│   ├── +page.svelte (Svelte 5 main page)
 │   ├── admin/
-│   │   └── +page.svelte
+│   │   ├── +page.svelte (Form actions UI)
+│   │   └── +page.server.js (Server actions)
 │   └── api/
 │       ├── content/
+│       │   └── +server.js (Enhanced endpoints)
 │       └── search/
-└── app.html
+│           └── +server.js (Real-time search)
+├── params/
+│   └── slug.js (Enhanced parameter matching)
+└── app.html (Enhanced with performance hints)
 ```
 
 ---
 
-## Success Metrics
+## Success Metrics & Monitoring
 
-### Performance KPIs
-- **Page Load Time**: < 2 seconds
-- **First Contentful Paint**: < 1 second
-- **Lighthouse Score**: > 90 across all metrics
-- **Animation Frame Rate**: 60fps consistent
+### Enhanced Performance KPIs
+- **Core Web Vitals**: LCP < 1.2s, FID < 100ms, CLS < 0.1
+- **Bundle Size**: < 50KB initial, < 150KB total with code splitting
+- **Animation Performance**: Consistent 60fps with GPU acceleration
+- **Mobile Performance**: Lighthouse score > 95 on mobile
 
-### User Experience KPIs
-- **Bounce Rate**: < 30%
-- **Session Duration**: > 3 minutes
-- **Page Views per Session**: > 5
-- **Mobile Usability**: 100% score
-### Technical KPIs
-- **Uptime**: 99.9%
-- **Error Rate**: < 0.1%
-- **Bundle Size**: < 100KB gzipped
-- **Accessibility Score**: WCAG 2.1 AA compliant
+### Enhanced User Experience
+- **Accessibility**: WCAG 2.1 AAA compliance where possible
+- **Progressive Enhancement**: Full functionality without JavaScript
+- **Real-time Features**: WebSocket connections with fallbacks
+- **Cross-device**: Seamless experience across all device types
 
----
-
-## Maintenance & Updates
-
-### Content Management
-- **Regular Content Updates**: Weekly blog posts, monthly case studies
-- **SEO Monitoring**: Monthly SEO performance reviews
-- **Performance Audits**: Quarterly performance assessments
-- **Security Updates**: Immediate security patch implementations
-
-### Technical Maintenance
-- **Dependency Updates**: Monthly package updates
-- **Firebase Updates**: Follow Firebase release cycle
-- **Browser Compatibility**: Test with latest browser versions
-- **Mobile Testing**: Regular mobile device testing
-
----
-
-## Additional Technical Specifications
-
-### Grid System Details
-- **Grid Algorithm**: Custom CSS Grid with dynamic positioning
-- **Collision Detection**: Prevents card overlap in grid placement
-- **Responsive Breakpoints**: Mobile, tablet, and desktop optimizations
-- **Touch Interactions**: Native touch events with gesture recognition
-- **Performance Monitoring**: Real-time FPS and memory usage tracking
-
-### Animation Framework
-- **Core Library**: Anime.js v4.0.2
-- **Animation Types**: Transform, opacity, scale, morphing
-- **Easing Functions**: Custom cubic-bezier curves
-- **Performance**: GPU-accelerated animations
-- **Reduced Motion**: Respects user accessibility preferences
-
-### State Management Architecture
-- **Svelte Stores**: Reactive state management
-- **Persistence**: LocalStorage for UI preferences
-- **Real-time Updates**: Firestore real-time listeners
-- **Cache Strategy**: Memory + IndexedDB for offline support
-- **State Synchronization**: Multi-tab synchronization
-
-### Security Considerations
-- **Content Validation**: Server-side input validation
-- **XSS Prevention**: Content sanitization
-- **Rate Limiting**: API endpoint protection
-- **CORS Configuration**: Secure cross-origin policies
-- **Data Encryption**: Sensitive data encryption at rest
-
----
-
-This comprehensive project specification serves as the complete blueprint for the Rahuketu personal blog application, ensuring all stakeholders understand the scope, technical requirements, and expected outcomes of the project.
+This comprehensive specification leverages the latest SvelteKit 2.x and Svelte 5 features for optimal performance, developer experience, and user engagement.
