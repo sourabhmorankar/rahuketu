@@ -1,79 +1,87 @@
 <script lang="ts">
-let { card } = $props();
-const experiences = [
-  { role: 'Sr Cloud Network Engineer', company: 'Nice CXone', years: '2021–Present', desc: 'Leading cloud automation and network solutions.' },
-  { role: 'Network Engineer', company: 'XYZ Corp', years: '2017–2021', desc: 'Managed network infrastructure and automation.' },
-  { role: 'Support Engineer', company: 'ABC Tech', years: '2014–2017', desc: 'Provided L2/L3 support for enterprise clients.' }
-];
+	import { mockData } from '$lib/data/mockData.ts';
+	const experience = mockData.experience;
 </script>
 
 <div class="experience-map">
-  <h2>Experience Map</h2>
-  <ul>
-    {#each experiences as exp}
-      <li>
-        <div class="exp-header">
-          <span class="exp-role">{exp.role}</span>
-          <span class="exp-years">{exp.years}</span>
-        </div>
-        <span class="exp-company">{exp.company}</span>
-        <div class="exp-desc">{exp.desc}</div>
-      </li>
-    {/each}
-  </ul>
+	<h3>Professional Journey</h3>
+	<div class="timeline">
+		{#each experience as exp, i}
+			<div class="timeline-item">
+				<div class="timeline-dot"></div>
+				<div class="exp-content">
+					<h4>{exp.title}</h4>
+					<p class="company">{exp.company} • {exp.period}</p>
+					<ul class="highlights">
+						{#each exp.highlights.slice(0, 2) as highlight}
+							<li>{highlight}</li>
+						{/each}
+					</ul>
+				</div>
+			</div>
+		{/each}
+	</div>
 </div>
 
 <style>
-.experience-map {
-  height: 100%;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.experience-map h2 {
-  margin: 0 0 10px 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #2563eb;
-  text-align: center;
-}
-.experience-map ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.experience-map li {
-  background: #f3f4f6;
-  border-radius: 8px;
-  padding: 10px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.exp-header {
-  display: flex;
-  justify-content: space-between;
-  font-weight: 600;
-  color: #374151;
-}
-.exp-role {
-  font-size: 0.97rem;
-}
-.exp-years {
-  font-size: 0.85rem;
-  color: #6b7280;
-}
-.exp-company {
-  font-size: 0.87rem;
-  color: #3b82f6;
-}
-.exp-desc {
-  font-size: 0.82rem;
-  color: #374151;
-  margin-top: 2px;
-}
+	.experience-map {
+		height: 100%;
+		padding: 20px;
+		background: #fefefe;
+		border-radius: 16px;
+		border: 2px solid #e5e7eb;
+	}
+	
+	h3 {
+		margin: 0 0 20px 0;
+		color: #111827;
+		font-size: 1.1rem;
+		font-weight: 600;
+	}
+	
+	.timeline {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		position: relative;
+	}
+	
+	.timeline-item {
+		display: flex;
+		gap: 12px;
+		align-items: flex-start;
+	}
+	
+	.timeline-dot {
+		width: 12px;
+		height: 12px;
+		background: #3b82f6;
+		border-radius: 50%;
+		margin-top: 4px;
+		flex-shrink: 0;
+	}
+	
+	.exp-content h4 {
+		margin: 0 0 4px 0;
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: #1f2937;
+	}
+	
+	.company {
+		margin: 0 0 8px 0;
+		font-size: 0.8rem;
+		color: #6b7280;
+	}
+	
+	.highlights {
+		margin: 0;
+		padding-left: 16px;
+		font-size: 0.75rem;
+		color: #4b5563;
+	}
+	
+	.highlights li {
+		margin-bottom: 4px;
+	}
 </style>

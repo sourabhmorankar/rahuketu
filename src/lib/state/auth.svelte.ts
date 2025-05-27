@@ -1,61 +1,44 @@
-interface User {
-  uid: string;
-  email: string | null;
-  displayName: string | null;
-  photoURL: string | null;
-  isAdmin: boolean;
-}
+import type { User } from '$lib/types/auth';
 
-interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
-}
+let currentUser: User | null = $state(null);
+let isAuthenticated = $state(false);
+let isLoading = $state(false);
+let authError: string | null = $state(null);
 
-let authState = $state<AuthState>({
-  user: null,
-  isAuthenticated: false,
-  isLoading: true,
-  error: null
+const authState = $derived(() => ({
+	user: currentUser,
+	isAuthenticated,
+	isLoading,
+	error: authError
+}));
+
+$effect(() => {
+	isAuthenticated = currentUser !== null && currentUser.role === 'admin';
 });
 
-interface AuthAPI {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
-  setUser: (user: User | null) => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
-  signOut: () => void;
-}
-
-export function useAuth(): AuthAPI {
-  return {
-    get user() { return authState.user; },
-    get isAuthenticated() { return authState.isAuthenticated; },
-    get isLoading() { return authState.isLoading; },
-    get error() { return authState.error; },
-    
-    setUser: (user: User | null) => {
-      authState.user = user;
-      authState.isAuthenticated = !!user;
-      authState.error = null;
-    },
-    
-    setLoading: (loading: boolean) => {
-      authState.isLoading = loading;
-    },
-    
-    setError: (error: string | null) => {
-      authState.error = error;
-    },
-    
-    signOut: () => {
-      authState.user = null;
-      authState.isAuthenticated = false;
-      authState.error = null;
-    }
-  };
+export function useAuth() {
+	return {
+		get state() { return authState; },
+		get user() { return currentUser; },
+		get isAuthenticated() { return isAuthenticated; },
+		get isLoading() { return isLoading; },
+		get error() { return authError; },
+		
+		setUser: (user: User | null) => {
+			currentUser = user;
+		},
+		
+		setLoading: (loading: boolean) => {
+			isLoading = loading;
+		},
+		
+		setError: (error: string | null) => {
+			authError = error;
+		},
+		
+		logout: () => {
+			currentUser = null;
+			authError = null;
+		}
+	};
 }

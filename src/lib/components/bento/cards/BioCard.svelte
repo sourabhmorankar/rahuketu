@@ -1,36 +1,27 @@
-
-<script>
-	let { card } = $props();
-	
-	const rahulData = {
-		name: "Rahul Nangare",
-		title: "Sr Cloud Network & Automation Engineer",
-		company: "Nice CXone",
-		location: "Pune, India",
-		bio: "10+ years in network engineering with expertise in cloud platforms, automation, and network protocols.",
-		email: "rahulnangare93@gmail.com",
-		phone: "+91 7588378020"
-	};
+<script lang="ts">
+	import { mockData } from '$lib/data/mockData.ts';
+	const profile = mockData.profile;
 </script>
 
 <div class="bio-card">
-	<div class="avatar-section">
-		<div class="avatar">
-			<img src="/avatar-placeholder.svg" alt="{rahulData.name}" />
+	<div class="header">
+		<div class="avatar">RN</div>
+		<div class="status">
+			<span class="status-dot"></span>
+			<span>Available</span>
 		</div>
 	</div>
 	
-	<div class="info-section">
-		<h2>{rahulData.name}</h2>
-		<h3>{rahulData.title}</h3>
-		<p class="company">{rahulData.company} • {rahulData.location}</p>
-		<p class="bio">{rahulData.bio}</p>
-		
-		<div class="contact">
-			<a href="mailto:{rahulData.email}" class="contact-link">
-				📧 Email
-			</a>
-		</div>
+	<div class="content">
+		<h1>{profile.name}</h1>
+		<h2>{profile.title}</h2>
+		<p class="company">{profile.company}</p>
+		<p class="location">📍 {profile.location}</p>
+	</div>
+	
+	<div class="quick-contact">
+		<button class="contact-btn">📧 Email</button>
+		<button class="contact-btn">📱 Call</button>
 	</div>
 </div>
 
@@ -38,81 +29,92 @@
 	.bio-card {
 		height: 100%;
 		padding: 20px;
+		background: #6366f1;
+		color: white;
+		border-radius: 16px;
 		display: flex;
 		flex-direction: column;
 		gap: 16px;
 	}
 	
-	.avatar-section {
+	.header {
 		display: flex;
-		justify-content: center;
+		justify-content: space-between;
+		align-items: center;
 	}
 	
 	.avatar {
-		width: 80px;
-		height: 80px;
+		width: 50px;
+		height: 50px;
 		border-radius: 50%;
-		overflow: hidden;
-		border: 3px solid #e5e7eb;
-	}
-	
-	.avatar img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
-	
-	.info-section h2 {
-		margin: 0;
-		font-size: 1.25rem;
-		font-weight: 700;
-		color: #111827;
-		text-align: center;
-	}
-	
-	.info-section h3 {
-		margin: 4px 0;
-		font-size: 0.875rem;
-		font-weight: 600;
-		color: #3b82f6;
-		text-align: center;
-	}
-	
-	.company {
-		margin: 8px 0;
-		font-size: 0.75rem;
-		color: #6b7280;
-		text-align: center;
-	}
-	
-	.bio {
-		margin: 12px 0;
-		font-size: 0.75rem;
-		line-height: 1.4;
-		color: #374151;
-		text-align: center;
-	}
-	
-	.contact {
+		background: rgba(255, 255, 255, 0.2);
 		display: flex;
-		justify-content: center;
-		margin-top: auto;
-	}
-	
-	.contact-link {
-		display: inline-flex;
 		align-items: center;
-		gap: 4px;
-		padding: 6px 12px;
-		background: #f3f4f6;
-		border-radius: 6px;
-		text-decoration: none;
-		font-size: 0.75rem;
-		color: #374151;
-		transition: background 0.2s ease;
+		justify-content: center;
+		font-size: 1.2rem;
+		font-weight: bold;
+		border: 2px solid rgba(255, 255, 255, 0.3);
 	}
 	
-	.contact-link:hover {
-		background: #e5e7eb;
+	.status {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		font-size: 0.8rem;
+		background: rgba(255, 255, 255, 0.15);
+		padding: 6px 10px;
+		border-radius: 20px;
+	}
+	
+	.status-dot {
+		width: 6px;
+		height: 6px;
+		background: #4ade80;
+		border-radius: 50%;
+	}
+	
+	.content {
+		text-align: center;
+		flex: 1;
+	}
+	
+	h1 {
+		font-size: 1.4rem;
+		margin: 0 0 4px 0;
+		font-weight: bold;
+	}
+	
+	h2 {
+		font-size: 0.9rem;
+		margin: 0 0 8px 0;
+		opacity: 0.9;
+		font-weight: 500;
+	}
+	
+	.company, .location {
+		font-size: 0.8rem;
+		margin: 4px 0;
+		opacity: 0.8;
+	}
+	
+	.quick-contact {
+		display: flex;
+		gap: 8px;
+	}
+	
+	.contact-btn {
+		flex: 1;
+		background: rgba(255, 255, 255, 0.2);
+		border: none;
+		color: white;
+		padding: 8px;
+		border-radius: 8px;
+		font-size: 0.8rem;
+		cursor: pointer;
+		transition: background 0.2s;
+	}
+	
+	.contact-btn:hover {
+		background: rgba(255, 255, 255, 0.3);
 	}
 </style>

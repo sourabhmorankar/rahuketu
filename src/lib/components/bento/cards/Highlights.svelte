@@ -1,62 +1,64 @@
 <script lang="ts">
-let { card } = $props();
-const highlights = [
-  { title: 'Patent Granted', desc: 'Cloud automation patent awarded in 2023.' },
-  { title: 'Speaker', desc: 'Presented at CloudConf 2022.' },
-  { title: 'Open Source', desc: 'Maintainer of NetAutoJS.' }
-];
+	import { mockData } from '$lib/data/mockData.ts';
+	const achievements = mockData.achievements.slice(0, 3);
 </script>
 
 <div class="highlights">
-  <h2>Highlights</h2>
-  <ul>
-    {#each highlights as h}
-      <li>
-        <span class="highlight-title">{h.title}</span>
-        <span class="highlight-desc">{h.desc}</span>
-      </li>
-    {/each}
-  </ul>
+	<h3>🏆 Key Achievements</h3>
+	<div class="achievements">
+		{#each achievements as achievement}
+			<div class="achievement">
+				<div class="year">{achievement.year}</div>
+				<div class="title">{achievement.title}</div>
+				{#if achievement.org}
+					<div class="org">{achievement.org}</div>
+				{/if}
+			</div>
+		{/each}
+	</div>
 </div>
 
 <style>
-.highlights {
-  height: 100%;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.highlights h2 {
-  margin: 0 0 10px 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #2563eb;
-  text-align: center;
-}
-.highlights ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.highlights li {
-  background: #f3f4f6;
-  border-radius: 8px;
-  padding: 10px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.highlight-title {
-  font-size: 0.97rem;
-  font-weight: 600;
-  color: #374151;
-}
-.highlight-desc {
-  font-size: 0.85rem;
-  color: #6b7280;
-}
+	.highlights {
+		height: 100%;
+		padding: 20px;
+		background: #f59e0b;
+		color: white;
+		border-radius: 16px;
+	}
+	
+	h3 {
+		margin: 0 0 16px 0;
+		font-size: 1.1rem;
+		font-weight: 600;
+	}
+	
+	.achievements {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+	
+	.achievement {
+		background: rgba(255, 255, 255, 0.2);
+		padding: 12px;
+		border-radius: 8px;
+	}
+	
+	.year {
+		font-size: 0.75rem;
+		opacity: 0.8;
+		font-weight: 600;
+	}
+	
+	.title {
+		font-size: 0.85rem;
+		font-weight: 500;
+		margin: 4px 0;
+	}
+	
+	.org {
+		font-size: 0.75rem;
+		opacity: 0.9;
+	}
 </style>

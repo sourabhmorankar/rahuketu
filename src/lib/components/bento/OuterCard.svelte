@@ -6,10 +6,13 @@ import PhotoUpdate from './cards/PhotoUpdate.svelte';
 import ClientTestimonial from './cards/ClientTestimonial.svelte';
 import BreakingNews from './cards/BreakingNews.svelte';
 import { useGrid } from '../../state/grid.svelte';
+import * as anime from 'animejs';
+const animejs = (anime as any).default || anime;
 import type { OuterCardType } from '$lib/types/content';
 
 let { card, content = {} } = $props();
 const grid = useGrid();
+let cardEl: HTMLElement;
 
 const map: Record<OuterCardType, any> = {
   blogArticle: BlogArticle,
@@ -22,6 +25,17 @@ const map: Record<OuterCardType, any> = {
 
 const Comp = map[card.type as OuterCardType] ?? null;
 const isSelected = $derived(grid.selected === card.id);
+$effect(() => {
+	if (cardEl) {
+		animejs({
+			targets: cardEl,
+			scale: isSelected ? 1.05 : 1,
+			boxShadow: isSelected ? '0 0 0 2px #3b82f6, 0 6px 18px rgba(0,0,0,0.13)' : '0 2px 8px rgba(0,0,0,0.08)',
+			duration: 300,
+			easing: 'easeOutQuad'
+		});
+	}
+});
 const transform = $derived(`translate(${card.position.x * 200}px, ${card.position.y * 200}px)`);
 
 function handleClick() {
@@ -30,10 +44,13 @@ function handleClick() {
 </script>
 
 <div
-  class="outer-card"
+  bind:this={cardEl}
+  class="outer-card type-{card.type}"
   class:selected={isSelected}
   style="transform: {transform}"
   onclick={handleClick}
+  onmouseenter={() => cardEl && animejs({ targets: cardEl, scale: 1.03, duration: 200, easing: 'easeOutQuad' })}
+  onmouseleave={() => cardEl && animejs({ targets: cardEl, scale: isSelected ? 1.05 : 1, duration: 200, easing: 'easeOutQuad' })}
   onkeydown={(e) => e.key === 'Enter' && handleClick()}
   role="button"
   tabindex="0"

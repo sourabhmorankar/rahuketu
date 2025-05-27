@@ -5,5 +5,4 @@ export interface Card {
 	size: string;
 	width?: number;
 	height?: number;
-	content?: Record<string, any>;
 }

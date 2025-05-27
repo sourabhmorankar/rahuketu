@@ -1,77 +1,60 @@
-interface UIState {
-  searchOpen: boolean;
-  authDrawerOpen: boolean;
-  dashboardOpen: boolean;
-  legalDrawerOpen: boolean;
-}
+let searchQuery: string = $state('');
+let searchResults: any[] = $state([]);
+let isSearching: boolean = $state(false);
+let searchDrawerOpen: boolean = $state(false);
+let authDrawerOpen: boolean = $state(false);
+let dashboardOpen: boolean = $state(false);
+let legalDrawerOpen: boolean = $state(false);
 
-let uiState = $state<UIState>({
-  searchOpen: false,
-  authDrawerOpen: false,
-  dashboardOpen: false,
-  legalDrawerOpen: false
-});
+const hasSearchQuery: boolean = $derived(searchQuery.trim().length > 0);
+const searchResultsCount: number = $derived(searchResults.length);
 
-interface UIAPI {
-  searchOpen: boolean;
-  authDrawerOpen: boolean;
-  dashboardOpen: boolean;
-  legalDrawerOpen: boolean;
-  toggleSearch: () => void;
-  toggleAuthDrawer: () => void;
-  toggleDashboard: () => void;
-  toggleLegalDrawer: () => void;
-  closeAll: () => void;
-}
-
-export function useUI(): UIAPI {
-  return {
-    get searchOpen() { return uiState.searchOpen; },
-    get authDrawerOpen() { return uiState.authDrawerOpen; },
-    get dashboardOpen() { return uiState.dashboardOpen; },
-    get legalDrawerOpen() { return uiState.legalDrawerOpen; },
-    
-    toggleSearch: () => {
-      uiState.searchOpen = !uiState.searchOpen;
-      if (uiState.searchOpen) {
-        uiState.authDrawerOpen = false;
-        uiState.dashboardOpen = false;
-        uiState.legalDrawerOpen = false;
-      }
-    },
-    
-    toggleAuthDrawer: () => {
-      uiState.authDrawerOpen = !uiState.authDrawerOpen;
-      if (uiState.authDrawerOpen) {
-        uiState.searchOpen = false;
-        uiState.dashboardOpen = false;
-        uiState.legalDrawerOpen = false;
-      }
-    },
-    
-    toggleDashboard: () => {
-      uiState.dashboardOpen = !uiState.dashboardOpen;
-      if (uiState.dashboardOpen) {
-        uiState.searchOpen = false;
-        uiState.authDrawerOpen = false;
-        uiState.legalDrawerOpen = false;
-      }
-    },
-    
-    toggleLegalDrawer: () => {
-      uiState.legalDrawerOpen = !uiState.legalDrawerOpen;
-      if (uiState.legalDrawerOpen) {
-        uiState.searchOpen = false;
-        uiState.authDrawerOpen = false;
-        uiState.dashboardOpen = false;
-      }
-    },
-    
-    closeAll: () => {
-      uiState.searchOpen = false;
-      uiState.authDrawerOpen = false;
-      uiState.dashboardOpen = false;
-      uiState.legalDrawerOpen = false;
-    }
-  };
+export function useUI() {
+	return {
+		get searchQuery() { return searchQuery; },
+		get searchResults() { return searchResults; },
+		get isSearching() { return isSearching; },
+		get hasSearchQuery() { return hasSearchQuery; },
+		get resultsCount() { return searchResultsCount; },
+		
+		get searchDrawerOpen() { return searchDrawerOpen; },
+		get authDrawerOpen() { return authDrawerOpen; },
+		get dashboardOpen() { return dashboardOpen; },
+		get legalDrawerOpen() { return legalDrawerOpen; },
+		
+		setSearchQuery: (query: string) => {
+			searchQuery = query;
+		},
+		
+		setSearchResults: (results: any[]) => {
+			searchResults = results;
+		},
+		
+		setSearching: (searching: boolean) => {
+			isSearching = searching;
+		},
+		
+		toggleSearchDrawer: () => {
+			searchDrawerOpen = !searchDrawerOpen;
+		},
+		
+		toggleAuthDrawer: () => {
+			authDrawerOpen = !authDrawerOpen;
+		},
+		
+		toggleDashboard: () => {
+			dashboardOpen = !dashboardOpen;
+		},
+		
+		toggleLegalDrawer: () => {
+			legalDrawerOpen = !legalDrawerOpen;
+		},
+		
+		closeAllDrawers: () => {
+			searchDrawerOpen = false;
+			authDrawerOpen = false;
+			dashboardOpen = false;
+			legalDrawerOpen = false;
+		}
+	};
 }

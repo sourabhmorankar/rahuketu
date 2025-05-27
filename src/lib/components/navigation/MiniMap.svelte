@@ -1,72 +1,85 @@
 <script lang="ts">
-	import { useGrid } from '../../state/grid.svelte';
-
-	interface ViewportIndicator {
-		x: number;
-		y: number;
-		width: number;
-		height: number;
-	}
-
-	const grid = useGrid();
-
-	const mapScale = 0.1;
-	const mapSize = 120;
-
-	const viewportIndicator: ViewportIndicator = $derived({
-		x: (grid.center.x * mapScale) - (grid.position.x * mapScale),
-		y: (grid.center.y * mapScale) - (grid.position.y * mapScale),
-		width: (grid.viewport.width * mapScale) / grid.zoom,
-		height: (grid.viewport.height * mapScale) / grid.zoom
-	});
-
-	function handleMapClick(event: MouseEvent | KeyboardEvent) {
-		const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-		const clickX = event instanceof MouseEvent ? event.clientX - rect.left : 0; // Simplified for keyboard event
-		const clickY = event instanceof MouseEvent ? event.clientY - rect.top : 0; // Simplified for keyboard event
-
-		const targetX = (clickX - mapSize / 2) / mapScale;
-		const targetY = (clickY - mapSize / 2) / mapScale;
-
-		grid.setPosition({ x: targetX, y: targetY });
-	}
+	let gridPosition = $state({ x: 0, y: 0 });
+	let viewportPosition = $state({ x: 0, y: 0 });
 </script>
 
-<div class="mini-map" onclick={handleMapClick} onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && handleMapClick(e)} role="button" tabindex="0">
-	<div class="map-grid">
-		<div class="grid-lines">
-			{#each Array(10) as _, i}
-				<div class="grid-line-v" style="left: {(i + 1) * 12}px"></div>
-				<div class="grid-line-h" style="top: {(i + 1) * 12}px"></div>
-			{/each}
+<div class="mini-map">
+	<div class="map-container">
+		<div class="grid-overview">
+			<div class="grid-cells">
+				{#each Array(9) as _, i}
+					{#each Array(9) as _, j}
+						<div 
+							class="grid-cell"
+							class:has-content={Math.random() > 0.6}
+						></div>
+					{/each}
+				{/each}
+			</div>
+			<div 
+				class="viewport-indicator"
+				style="transform: translate({viewportPosition.x}px, {viewportPosition.y}px)"
+			></div>
 		</div>
-
-		<div 
-			class="viewport-indicator"
-			style="
-				transform: translate({viewportIndicator.x}px, {viewportIndicator.y}px);
-				width: {viewportIndicator.width}px;
-				height: {viewportIndicator.height}px;
-			"
-		></div>
-	</div>
-
-	<div class="zoom-info">
-		{Math.round(grid.zoom * 100)}%
+		<div class="map-label">Grid Map</div>
 	</div>
 </div>
-
 <style>
 	.mini-map {
 		position: fixed;
-		bottom: 20px;
-		left: 20px;
+		bottom: 24px;
+		left: 24px;
+		z-index: 1000;
+	}
+	
+	.map-container {
+		background: #ffffff;
+		border: 2px solid #e0e0e0;
+		border-radius: 12px;
+		padding: 12px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	}
+	
+	.grid-overview {
 		width: 120px;
 		height: 120px;
-		background: white;
-		border-radius: 8px;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-		cursor: pointer;
-		z-index: 100;
+		position: relative;
+		margin-bottom: 8px;
+	}
+	
+	.grid-cells {
+		display: grid;
+		grid-template-columns: repeat(9, 1fr);
+		grid-template-rows: repeat(9, 1fr);
+		gap: 1px;
+		width: 100%;
+		height: 100%;
+	}
+	
+	.grid-cell {
+		background: #f5f5f5;
+		border-radius: 2px;
+	}
+	
+	.grid-cell.has-content {
+		background: #333;
+	}
+	
+	.viewport-indicator {
+		position: absolute;
+		top: 40px;
+		left: 40px;
+		width: 40px;
+		height: 40px;
+		border: 2px solid #ff6b35;
+		border-radius: 4px;
+		background: rgba(255, 107, 53, 0.2);
+	}
+	
+	.map-label {
+		text-align: center;
+		font-size: 0.75rem;
+		color: #666;
+		font-weight: 500;
 	}
 </style>

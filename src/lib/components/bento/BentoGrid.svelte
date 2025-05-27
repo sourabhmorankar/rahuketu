@@ -1,124 +1,106 @@
 <script lang="ts">
-	import { useGrid } from '../../state/grid.svelte';
-	import { useUI } from '../../state/ui.svelte';
-	import InnerCard from './InnerCard.svelte';
-	import OuterCard from './OuterCard.svelte';
-	import type { Card } from '../../types/card';
-
-	let { innerCards, outerCards } = $props<{ innerCards: Card[], outerCards: Card[] }>();
-
-	const grid = useGrid();
-	const ui = useUI();
-
-	let processedInnerCards = $derived(innerCards.map((card: Card) => ({ ...card, width: card.width ?? 1, height: card.height ?? 1 })));
-	let processedOuterCards = $derived(outerCards.map((card: Card) => ({ ...card, width: card.width ?? 1, height: card.height ?? 1 })));
-
-	let gridContainer: HTMLElement;
-
-	let isDragging = false;
-	let lastPosition = { x: 0, y: 0 };
-
-	$effect(() => {
-		grid.setViewport({ width: gridContainer.offsetWidth, height: gridContainer.offsetHeight });
-	});
-
-	function handleMouseDown(event: MouseEvent) {
-		if (event.button === 0) {
-			isDragging = true;
-			lastPosition = { x: event.clientX, y: event.clientY };
-			gridContainer.style.cursor = 'grabbing';
-		}
+	interface Card {
+		id: string;
+		type: string;
+		position: { x: number; y: number };
+		size: string;
 	}
-
-	function handleMouseMove(event: MouseEvent) {
-		if (isDragging) {
-			const dx = event.clientX - lastPosition.x;
-			const dy = event.clientY - lastPosition.y;
-			grid.move(dx, dy);
-			lastPosition = { x: event.clientX, y: event.clientY };
-		}
-	}
-
-	function handleMouseUp() {
-		isDragging = false;
-		gridContainer.style.cursor = 'grab';
-	}
-
-	function handleWheel(event: WheelEvent) {
-		event.preventDefault();
-		const scaleAmount = -event.deltaY * 0.001;
-		grid.zoomBy(scaleAmount);
-	}
-
-	function handleKeyDown(event: KeyboardEvent) {
-		const moveAmount = 50;
-		switch (event.key) {
-			case 'ArrowUp':
-				grid.move(0, moveAmount);
-				break;
-			case 'ArrowDown':
-				grid.move(0, -moveAmount);
-				break;
-			case 'ArrowLeft':
-				grid.move(moveAmount, 0);
-				break;
-			case 'ArrowRight':
-				grid.move(-moveAmount, 0);
-				break;
-		}
-	}
+	
+	let { cards = [] }: { cards: Card[] } = $props();
 </script>
 
-<svelte:window on:mouseup={handleMouseUp} on:mousemove={handleMouseMove} />
-
-<section
-	bind:this={gridContainer}
-	class="bento-grid"
-	role="application"
-	onmousedown={handleMouseDown}
-	onwheel={handleWheel}
-	onkeydown={handleKeyDown}
-	aria-label="Interactive bento grid"
-	style="transform: translate({-grid.position.x}px, {-grid.position.y}px) scale({grid.zoom})"
->
-	<div class="inner-circle">
-		{#each processedInnerCards as card (card.id)}
-			<InnerCard {card} />
+<div class="bento-grid">
+	<div class="grid-container">
+		{#each cards as card (card.id)}
+			<div 
+				class="grid-card size-{card.size}" 
+				style="grid-column: {card.position.x + 1}; grid-row: {card.position.y + 1};"
+			>
+				<div class="card-content">
+					<h3>{card.type}</h3>
+					<p>Card ID: {card.id}</p>
+				</div>
+			</div>
 		{/each}
 	</div>
-	
-	<div class="outer-circle">
-		{#each processedOuterCards as card (card.id)}
-			<OuterCard {card} content={card.content} />
-		{/each}
-	</div>
-</section>
+</div>
 
 <style>
 	.bento-grid {
-		position: relative;
 		width: 100%;
 		height: 100%;
 		overflow: hidden;
-		cursor: grab;
-		transform-origin: 0 0;
-		will-change: transform;
+		position: relative;
 	}
 	
-	.inner-circle {
+	.grid-container {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, 200px);
+		grid-template-rows: repeat(auto-fit, 200px);
+		gap: 16px;
+		padding: 24px;
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
-		z-index: 10;
 	}
 	
-	.outer-circle {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
+	.grid-card {
+		border-radius: 16px;
+		background: #f5f5f5;
+		border: 2px solid #e0e0e0;
+		overflow: hidden;
+		transition: transform 0.2s ease;
+	}
+	
+	.grid-card:hover {
+		transform: scale(1.02);
+	}	
+	.grid-card.size-1x1 {
+		grid-column: span 1;
+		grid-row: span 1;
+	}
+	
+	.grid-card.size-1x2 {
+		grid-column: span 1;
+		grid-row: span 2;
+	}
+	
+	.grid-card.size-2x1 {
+		grid-column: span 2;
+		grid-row: span 1;
+	}
+	
+	.grid-card.size-2x2 {
+		grid-column: span 2;
+		grid-row: span 2;
+	}
+	
+	.grid-card.size-3x1 {
+		grid-column: span 3;
+		grid-row: span 1;
+	}
+	
+	.card-content {
+		padding: 16px;
 		height: 100%;
-		z-index: 5;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+	}
+	
+	h3 {
+		margin: 0 0 8px 0;
+		font-size: 1.2rem;
+		font-weight: 600;
+		color: #333;
+	}
+	
+	p {
+		margin: 0;
+		font-size: 0.9rem;
+		color: #666;
 	}
 </style>

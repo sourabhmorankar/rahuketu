@@ -1,79 +1,90 @@
 <script lang="ts">
-let { card } = $props();
-const skills = [
-  { name: 'Svelte', level: 90 },
-  { name: 'TypeScript', level: 85 },
-  { name: 'Firebase', level: 80 },
-  { name: 'Networking', level: 95 },
-  { name: 'Automation', level: 88 }
-];
+	import { mockData } from '$lib/data/mockData.ts';
+	const skills = Object.values(mockData.skills);
 </script>
 
 <div class="skill-tree">
-  <h2>Skill Tree</h2>
-  <ul>
-    {#each skills as skill}
-      <li>
-        <span class="skill-name">{skill.name}</span>
-        <div class="skill-bar-bg">
-          <div class="skill-bar" style="width: {skill.level}%"></div>
-        </div>
-        <span class="skill-level">{skill.level}%</span>
-      </li>
-    {/each}
-  </ul>
+	<h3>Technical Skills</h3>
+	<div class="skills-grid">
+		{#each skills as skill}
+			<div class="skill-item">
+				<div class="skill-info">
+					<span class="skill-name">{skill.name}</span>
+					<span class="skill-level">{skill.level}%</span>
+				</div>
+				<div class="skill-bar">
+					<div class="skill-progress" style="width: {skill.level}%"></div>
+				</div>
+				<span class="skill-category">{skill.category}</span>
+			</div>
+		{/each}
+	</div>
 </div>
 
 <style>
-.skill-tree {
-  height: 100%;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.skill-tree h2 {
-  margin: 0 0 10px 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #2563eb;
-  text-align: center;
-}
-.skill-tree ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.skill-tree li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.skill-name {
-  flex: 1 0 80px;
-  font-size: 0.95rem;
-  color: #374151;
-}
-.skill-bar-bg {
-  flex: 3 1 120px;
-  background: #e5e7eb;
-  border-radius: 6px;
-  height: 10px;
-  overflow: hidden;
-}
-.skill-bar {
-  height: 100%;
-  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
-  border-radius: 6px;
-  transition: width 0.4s;
-}
-.skill-level {
-  width: 36px;
-  text-align: right;
-  font-size: 0.85rem;
-  color: #6b7280;
-}
+	.skill-tree {
+		height: 100%;
+		padding: 20px;
+		background: #f8fafc;
+		border-radius: 16px;
+		border: 2px solid #e2e8f0;
+	}
+	
+	h3 {
+		margin: 0 0 16px 0;
+		color: #1e293b;
+		font-size: 1.25rem;
+		font-weight: 600;
+	}
+	
+	.skills-grid {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+	
+	.skill-item {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+	
+	.skill-info {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+	
+	.skill-name {
+		font-weight: 500;
+		color: #334155;
+		font-size: 0.9rem;
+	}
+	
+	.skill-level {
+		font-size: 0.8rem;
+		color: #64748b;
+		font-weight: 600;
+	}
+	
+	.skill-bar {
+		height: 6px;
+		background: #e2e8f0;
+		border-radius: 3px;
+		overflow: hidden;
+	}
+	
+	.skill-progress {
+		height: 100%;
+		background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+		border-radius: 3px;
+		transition: width 0.3s ease;
+	}
+	
+	.skill-category {
+		font-size: 0.75rem;
+		color: #64748b;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
 </style>

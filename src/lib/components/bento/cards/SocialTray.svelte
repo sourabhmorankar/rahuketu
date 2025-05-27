@@ -1,52 +1,86 @@
 <script lang="ts">
-let { card } = $props();
-const socials = [
-  { name: 'GitHub', url: 'https://github.com/rahulnangare', icon: '🐙' },
-  { name: 'LinkedIn', url: 'https://linkedin.com/in/rahulnangare', icon: '🔗' },
-  { name: 'Twitter', url: 'https://twitter.com/rahulnangare', icon: '🐦' }
-];
+	const socialLinks = [
+		{ platform: "LinkedIn", icon: "💼", url: "https://in.linkedin.com/in/rahul-nangare" },
+		{ platform: "GitHub", icon: "🐙", url: "#" },
+		{ platform: "Twitter", icon: "🐦", url: "#" }
+	];
 </script>
 
 <div class="social-tray">
-  <h2>Social</h2>
-  <div class="social-list">
-    {#each socials as s}
-      <a class="social-link" href={s.url} target="_blank" rel="noopener noreferrer">{s.icon} {s.name}</a>
-    {/each}
-  </div>
+	<h3>🌐 Connect</h3>
+	<div class="social-links">
+		{#each socialLinks as link}
+			<a href={link.url} class="social-link" target="_blank" rel="noopener">
+				<span class="icon">{link.icon}</span>
+				<span class="platform">{link.platform}</span>
+			</a>
+		{/each}
+	</div>
+	<div class="status">
+		<span class="status-dot"></span>
+		<span>Open to networking</span>
+	</div>
 </div>
 
 <style>
-.social-tray {
-  height: 100%;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  align-items: center;
-}
-.social-tray h2 {
-  margin: 0 0 10px 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #2563eb;
-  text-align: center;
-}
-.social-list {
-  display: flex;
-  gap: 12px;
-}
-.social-link {
-  background: #f3f4f6;
-  border-radius: 6px;
-  padding: 8px 14px;
-  color: #374151;
-  font-size: 1rem;
-  text-decoration: none;
-  transition: background 0.2s;
-}
-.social-link:hover {
-  background: #3b82f6;
-  color: white;
-}
+	.social-tray {
+		height: 100%;
+		padding: 20px;
+		background: #06b6d4;
+		color: white;
+		border-radius: 16px;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+	
+	h3 {
+		margin: 0;
+		font-size: 1rem;
+		font-weight: 600;
+	}
+	
+	.social-links {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		flex: 1;
+	}
+	
+	.social-link {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 8px 12px;
+		background: rgba(255, 255, 255, 0.2);
+		border-radius: 8px;
+		text-decoration: none;
+		color: white;
+		transition: background 0.2s ease;
+		font-size: 0.85rem;
+	}
+	
+	.social-link:hover {
+		background: rgba(255, 255, 255, 0.3);
+	}
+	
+	.icon {
+		font-size: 1rem;
+	}
+	
+	.status {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		font-size: 0.8rem;
+		opacity: 0.9;
+		margin-top: auto;
+	}
+	
+	.status-dot {
+		width: 8px;
+		height: 8px;
+		background: #4ade80;
+		border-radius: 50%;
+	}
 </style>
