@@ -52,6 +52,23 @@
 - [x] Create `User` and `Auth` interfaces with enhanced security
 - [x] Create animation-related types with Anime.js v4
 
+#### InnerCircle Card Components COMPLETE
+- [x] BioCard
+- [x] SkillTree
+- [x] ExperienceMap
+- [x] Highlights
+- [x] PhotoBooth
+- [x] RahulAsks
+- [x] AskRahul
+- [x] MoodIndicator
+- [x] NewsMarquee
+- [x] SocialTray
+- [x] ContactRahul
+- [x] ResumeDownload
+- [x] FeaturedAreaOne
+- [x] FeaturedAreaTwo
+- [x] FeaturedAreaThree
+
 #### Code Quality and Accessibility COMPLETE
 - [x] Resolve TypeScript errors in `ActionIcons.svelte` related to `$derived` store.
 - [x] Resolve TypeScript errors in `MiniMap.svelte`.

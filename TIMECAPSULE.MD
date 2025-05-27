@@ -18,6 +18,13 @@
 - **Security**: Firebase App Check, enhanced authentication
 - **State Management**: $app/state module replacing $app/stores
 
+### 2025-05-27: InnerCircle Card Components
+- All Svelte innerCircle card components implemented in src/lib/components/bento/cards.
+- InnerCard.svelte supports all InnerCardType values and renders correct card.
+- All deprecated event directives replaced with recommended attributes.
+- ContactRahul.svelte form uses valid onsubmit handler.
+- Changes verified and aligned with rahuketu.md rules.
+
 ### TODO.md Modern Architecture
 - **Svelte 5 Tasks**: All tasks updated for runes-based development
 - **Performance Focus**: Virtual scrolling, intersection observers, GPU acceleration
